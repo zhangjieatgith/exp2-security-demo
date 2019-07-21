@@ -9,9 +9,14 @@
   </parent>
   
   	<dependencies>
-		<dependency>
+		<!-- <dependency>
 			<groupId>cn.zhang.jie</groupId>
 			<artifactId>exp2-security-browser</artifactId>
+			<version>${exp.security.version}</version>
+		</dependency> -->
+		<dependency>
+			<groupId>cn.zhang.jie</groupId>
+			<artifactId>exp2-security-app</artifactId>
 			<version>${exp.security.version}</version>
 		</dependency>
 		<!-- 引入Spring的测试框架 -->

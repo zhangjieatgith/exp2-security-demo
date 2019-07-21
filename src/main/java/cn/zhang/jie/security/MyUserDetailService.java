@@ -34,7 +34,7 @@ public class MyUserDetailService implements UserDetailsService, SocialUserDetail
 		String password = passwordEncoder.encode("123456");
 		logger.info("加密后的密码是 ： " + password);
 		return new SocialUser(username,password,true,true,true,true,
-			AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+			AuthorityUtils.commaSeparatedStringToAuthorityList("admin,ROLE_USER"));
 	}
 	
 	@Override
