@@ -1,11 +1,13 @@
 package cn.zhang.jie.web.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +32,16 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import cn.zhang.jie.core.properties.SercurityProperties;
 import cn.zhang.jie.dto.User;
 import cn.zhang.jie.dto.UserQueryCondition;
 import cn.zhang.jie.exception.UserNotExistException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 
 //表示这个java类是一个restful服务
 @RestController
@@ -41,9 +50,22 @@ public class UserController {
 
 	@Autowired
 	private ProviderSignInUtils providerSignInUtils;
+	@Autowired
+	private SercurityProperties sercurityProperties;
 	
 	@GetMapping("/me")
-	public Object getCurrentUser(@AuthenticationPrincipal UserDetails user) {
+//	public Object getCurrentUser(@AuthenticationPrincipal UserDetails user) {
+	//使用这种方式接受参数，可以解析JWT中的内容
+	public Object getCurrentUser(Authentication user, HttpServletRequest request) throws Exception {
+		
+		String header = request.getHeader("Authorization");
+		String token = StringUtils.substringAfter(header, "bearer ");
+		//解析 JWT Token 到一个 Claims 对象，其中包含了Jwt中的一些额外信息
+		Claims claims = Jwts.parser().setSigningKey(sercurityProperties.getOauth2().getJwtSigningKey().getBytes("UTF-8")).parseClaimsJws(token).getBody();
+		String company = (String) claims.get("company");
+		System.out.println("claims content : " + company);
+		
+		
 		//获取当前登录用户，方式一
 //		return SecurityContextHolder.getContext().getAuthentication();
 		//获取当前登录用户，方式二（方法入参 Authentication authentication）
