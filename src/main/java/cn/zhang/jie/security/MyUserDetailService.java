@@ -1,8 +1,14 @@
 package cn.zhang.jie.security;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +19,7 @@ import org.springframework.social.security.SocialUser;
 import org.springframework.social.security.SocialUserDetails;
 import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 
 @Component
 public class MyUserDetailService implements UserDetailsService, SocialUserDetailsService {
@@ -34,7 +41,7 @@ public class MyUserDetailService implements UserDetailsService, SocialUserDetail
 		String password = passwordEncoder.encode("123456");
 		logger.info("加密后的密码是 ： " + password);
 		return new SocialUser(username,password,true,true,true,true,
-			AuthorityUtils.commaSeparatedStringToAuthorityList("admin,ROLE_USER"));
+			AuthorityUtils.commaSeparatedStringToAuthorityList("admin,ROLE_USER,ROLE_ADMIN"));
 	}
 	
 	@Override
